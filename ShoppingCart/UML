@@ -1,0 +1,62 @@
+@startuml
+Class NetworkHandler {
+String location
+void recieveRequest()
+void returnMessage(Message m)
+void reconnect()
+String getLocation()
+}
+Class Cart {
+void addItem(uid i)
+void updateQuantity(Item i, int q)
+void removeItem(uid i)
+ArrayList<Item> getItems()
+}
+Class DiscountCode {
+double rate
+void applyCode(Cost c)
+double getRate()
+}
+Class Cost {
+double cost
+void updateTotal(Cart c)
+double getTaxedAmount(String location)
+double getDiscountedAmount(DiscountCode d)
+double getCost()
+}
+Class Tax{
+interface Algorithm
+HashMap<String, Tax> algorithms
+double applyTax(String location, double cost)
+}
+Class Item{
+uid identifier
+String name
+String description
+double price
+String picture
+double markOffRate
+uid getIdentifier()
+String getName()
+String getDescription()
+double getPrice()
+String getPicture()
+double getMarkOffRate()
+}
+Class Message{
+String m
+String getMessageText()
+}
+Class Stock{
+HashMap<uid, int> inventory
+void adjustStock(uid i, int differential)
+}
+
+Cart->"*"Item
+NetworkHandler..>Message
+Stock..>Item
+Cart->Cost
+Cost->DiscountCode
+Cost->Tax
+NetworkHandler-->Cart
+@enduml
