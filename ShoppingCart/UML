@@ -4,24 +4,33 @@ String location
 void recieveRequest()
 void returnMessage(Message m)
 void reconnect()
+void setLocaiton(String loc)
 String getLocation()
 }
 Class Cart {
-void addItem(uid i)
+void addItem(int i)
 void updateQuantity(Item i, int q)
-void removeItem(uid i)
-ArrayList<Item> getItems()
+void removeItem(int i)
+void saveToDisk()
+HashMap<Item, Integer> getItems()
+}
+enum RequestType{
+ViewCart
+AddItem
+ApplyDiscount
+ModifyQuantity
 }
 Class DiscountCode {
 double rate
-void applyCode(Cost c)
+void applyCode(double c)
 double getRate()
 }
 Class Cost {
 double cost
+ArrayList<DiscountCode> discountCodes
 void updateTotal(Cart c)
 double getTaxedAmount(String location)
-double getDiscountedAmount(DiscountCode d)
+double getDiscountedAmount(ArrayList<DiscountCode> d)
 double getCost()
 }
 Class Tax{
@@ -30,13 +39,13 @@ HashMap<String, Tax> algorithms
 double applyTax(String location, double cost)
 }
 Class Item{
-uid identifier
+int id
 String name
 String description
 double price
 String picture
 double markOffRate
-uid getIdentifier()
+int getIdentifier()
 String getName()
 String getDescription()
 double getPrice()
@@ -48,15 +57,21 @@ String m
 String getMessageText()
 }
 Class Stock{
-HashMap<uid, int> inventory
-void adjustStock(uid i, int differential)
+HashMap<int, int> inventory
+void adjustStock(int i, int differential)
+}
+Class Request{
+String [] data
+requestType type
 }
 
 Cart->"*"Item
 NetworkHandler..>Message
 Stock..>Item
 Cart->Cost
-Cost->DiscountCode
-Cost->Tax
+Cost->"*"DiscountCode
+Cost..>Tax
 NetworkHandler-->Cart
+NetworkHandler..>Request
+Request-->RequestType
 @enduml

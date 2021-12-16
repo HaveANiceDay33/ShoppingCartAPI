@@ -1,6 +1,6 @@
 
 public class Request {
-	public enum requestType {
+	public enum RequestType {
 		VIEW_CART,
 		ADD_ITEM,
 		APPLY_DISCOUNT,
@@ -8,9 +8,9 @@ public class Request {
 	}
 	
 	public String [] data;
-	public requestType type;
+	public RequestType type;
 	
-	public Request(requestType type, String ... data) {
+	public Request(RequestType type, String ... data) {
 		this.data = data;
 		this.type = type;
 	}
