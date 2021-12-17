@@ -17,27 +17,27 @@ public class Item {
 		this.markOffRate = markOffRate;
 	}
 	
-	public int getId() {
+	protected int getId() {
 		return id;
 	}
 
-	public String getName() {
+	protected String getName() {
 		return name;
 	}
 
-	public String getDescription() {
+	protected String getDescription() {
 		return description;
 	}
 
-	public double getPrice() {
+	protected double getPrice() {
 		return price;
 	}
 
-	public String getPicture() {
+	protected String getPicture() {
 		return picture;
 	}
 
-	public double getMarkOffRate() {
+	protected double getMarkOffRate() {
 		return markOffRate;
 	}
 

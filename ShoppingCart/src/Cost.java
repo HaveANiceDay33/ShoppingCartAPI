@@ -1,25 +1,29 @@
-import java.util.ArrayList;
+import java.io.Serializable;
+import java.util.Iterator;
 import java.util.Map;
 
-public class Cost {
+public class Cost implements Serializable {
 	private double cost;
-	ArrayList<DiscountCode> discountCodes;
+	protected DiscountCode discountCode;
 	
-	public Cost() {
-		discountCodes = new ArrayList<>();
+	protected Cost() {
+		discountCode = null;
 		cost = 0;
 	}
 	
-	public void updateTotal(Cart c) {
-		while(c.getItemIterator().hasNext()) {
-			Map.Entry<Item, Integer> itemSet = 
-					(Map.Entry<Item, Integer>) c.getItemIterator().next();
-			Item i = itemSet.getKey();
-			int quantity = itemSet.getValue();
+	protected void updateTotal(Cart c) {
+		Iterator iter = c.getItems().entrySet().iterator();
+		cost = 0;
+		while(iter.hasNext()) {
+			Map.Entry itemSet = (Map.Entry) iter.next();
 			
-			cost += i.getMarkOffRate() * i.getPrice() * quantity;
+			Item i = Stock.getItemList().get(itemSet.getKey());
+			
+			int quantity = (int) itemSet.getValue();
+			
+			cost += (i.getPrice() - (i.getMarkOffRate() * i.getPrice())) * quantity;
 		}
-		cost = getDiscountedAmount(discountCodes);
+		cost = getDiscountedAmount();
 		cost = getTaxedAmount(NetworkHandler.getLocation());
 	}
 	
@@ -27,16 +31,19 @@ public class Cost {
 		return Tax.applyTax(location, cost);
 	}
 	
-	private double getDiscountedAmount(ArrayList<DiscountCode> d) {
-		double c = cost;
-		for(int yndex = 0; yndex < d.size(); yndex++) {
-			c = d.get(yndex).applyCode(c);
+	private double getDiscountedAmount() {
+		if (this.discountCode == null) {
+			return this.cost;
 		}
-		return c;
+		return this.discountCode.applyCode(this.cost);
 	}
 	
-	public double getCost() {
-		return cost;
+	protected double getCost() {
+		return (double) Math.round(this.cost * 1000)/1000;
+	}
+	
+	protected void setDiscountCode(DiscountCode d) {
+		this.discountCode = d;
 	}
 	
 }

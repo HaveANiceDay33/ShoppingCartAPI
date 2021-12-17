@@ -1,16 +1,16 @@
 
 public class Request {
-	public enum RequestType {
+	protected static enum RequestType {
 		VIEW_CART,
 		ADD_ITEM,
 		APPLY_DISCOUNT,
 		MODIFY_QUANTITY
 	}
 	
-	public String [] data;
-	public RequestType type;
+	protected String [] data;
+	protected RequestType type;
 	
-	public Request(RequestType type, String ... data) {
+	protected Request(RequestType type, String ... data) {
 		this.data = data;
 		this.type = type;
 	}

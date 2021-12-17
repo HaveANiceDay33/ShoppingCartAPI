@@ -1,18 +1,24 @@
 @startuml
 Class NetworkHandler {
 String location
+String lastReturnedMessage
 void recieveRequest()
 void returnMessage(Message m)
 void reconnect()
 void setLocaiton(String loc)
 String getLocation()
+String getLast()
 }
 Class Cart {
+HashMap<Integer, Integer> items
 void addItem(int i)
 void updateQuantity(Item i, int q)
-void removeItem(int i)
-void saveToDisk()
-HashMap<Item, Integer> getItems()
+void setDiscountCode(DiscountCode d)
+void updateTotal()
+void getCost()
+void saveCartToDisk()
+int numItems()
+HashMap<Integer, Integer> getItems()
 }
 enum RequestType{
 ViewCart
@@ -27,14 +33,15 @@ double getRate()
 }
 Class Cost {
 double cost
-ArrayList<DiscountCode> discountCodes
 void updateTotal(Cart c)
 double getTaxedAmount(String location)
-double getDiscountedAmount(ArrayList<DiscountCode> d)
+double getDiscountedAmount()
 double getCost()
+void setDiscountCode(DiscountCode d)
 }
 Class Tax{
 interface Algorithm
+Map createAlgorithms()
 HashMap<String, Tax> algorithms
 double applyTax(String location, double cost)
 }
@@ -54,22 +61,27 @@ double getMarkOffRate()
 }
 Class Message{
 String m
-String getMessageText()
+String getMessage()
 }
 Class Stock{
-HashMap<int, int> inventory
-void adjustStock(int i, int differential)
+HashMap<Integer, Integer> inventory
+HashMap<Integer, Item> itemList
+boolean adjustStock(int i, int differential)
+void addItemToStock(Item i, int q)
+HashMap<Integer, Integer> getInventory()
+void clearInventory()
+HashMap<Integer, Item> getItemList()
 }
 Class Request{
 String [] data
-requestType type
+RequestType type
 }
 
 Cart->"*"Item
 NetworkHandler..>Message
 Stock..>Item
 Cart->Cost
-Cost->"*"DiscountCode
+Cost->DiscountCode
 Cost..>Tax
 NetworkHandler-->Cart
 NetworkHandler..>Request

@@ -1,16 +1,17 @@
+import java.io.Serializable;
 
-public class DiscountCode {
+public class DiscountCode implements Serializable {
 	private double rate;
 	
-	public DiscountCode(double rate) {
+	protected DiscountCode(double rate) {
 		this.rate = rate;
 	}
 	
-	public double applyCode(double c) {
+	protected double applyCode(double c) {
 		return c - (c * rate);
 	}
 	
-	public double getRate() {
+	protected double getRate() {
 		return rate;
 	}
 }
