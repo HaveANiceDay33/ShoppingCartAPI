@@ -39,44 +39,59 @@ public class NetworkHandler {
 	public void receiveRequest(Request r) {
 		
 		if (r.type == Request.RequestType.ADD_ITEM) {
-			this.cart.addItem(Integer.parseInt(r.data[0]));
+			if (r.data.length == 1)
+				this.cart.addItem(Integer.parseInt(r.data[0]));
+			else
+				NetworkHandler.returnMessage(new Message ("Incorrect number of arguments for request."));
 		} else if (r.type == Request.RequestType.MODIFY_QUANTITY) {
-			int q = Integer.parseInt(r.data[1]);
-			this.cart.updateQuantity(Integer.parseInt(r.data[0]), q);
+			if (r.data.length == 2) {
+				int q = Integer.parseInt(r.data[1]);
+				this.cart.updateQuantity(Integer.parseInt(r.data[0]), q);
+			} else {
+				NetworkHandler.returnMessage(new Message ("Incorrect number of arguments for request."));
+			}
 		} else if (r.type == Request.RequestType.VIEW_CART) {
-			try {
-				String cartString = "";
-
-				ByteArrayOutputStream bo = new ByteArrayOutputStream();
-				ObjectOutputStream so = new ObjectOutputStream(bo);
-				so.writeObject(this.cart);
-				so.flush();
-				cartString = bo.toString();
-				
-				so.close();
-				bo.close();
-				NetworkHandler.returnMessage(new Message("Cart with "+this.cart.numItems() + " items costing "+this.cart.getCost()));
-			} catch (Exception e) {
-				System.out.println(e);
+			if (r.data.length == 0) {
+				try {
+					String cartString = "";
+	
+					ByteArrayOutputStream bo = new ByteArrayOutputStream();
+					ObjectOutputStream so = new ObjectOutputStream(bo);
+					so.writeObject(this.cart);
+					so.flush();
+					cartString = bo.toString();
+					
+					so.close();
+					bo.close();
+					NetworkHandler.returnMessage(new Message("Cart with "+this.cart.numItems() + " items costing "+this.cart.getCost()));
+				} catch (Exception e) {
+					System.out.println(e);
+				}
+			} else {
+				NetworkHandler.returnMessage(new Message ("Incorrect number of arguments for request."));
 			}
 
 		} else if (r.type == Request.RequestType.APPLY_DISCOUNT) {
-			try {
-				byte b[] = r.data[0].getBytes();
-				ByteArrayInputStream bi = new ByteArrayInputStream(b);
-				ObjectInputStream si = new ObjectInputStream(bi);
-				DiscountCode dc = (DiscountCode) si.readObject();
-				
-				this.cart.setDiscountCode(dc);
-				this.cart.updateTotal();
-				NetworkHandler.returnMessage(new Message("Discount Code applied!"));
-				
-				bi.close();
-				si.close();
-			} catch (Exception e) {
-				System.out.println(e);
+			if(r.data.length == 1) {
+				try {
+					byte b[] = r.data[0].getBytes();
+					ByteArrayInputStream bi = new ByteArrayInputStream(b);
+					ObjectInputStream si = new ObjectInputStream(bi);
+					DiscountCode dc = (DiscountCode) si.readObject();
+					
+					this.cart.setDiscountCode(dc);
+					this.cart.updateTotal();
+					NetworkHandler.returnMessage(new Message("Discount Code applied!"));
+					
+					bi.close();
+					si.close();
+				} catch (Exception e) {
+					System.out.println(e);
+				}
+			
+			} else {
+				NetworkHandler.returnMessage(new Message ("Incorrect number of arguments for request."));
 			}
-
 		}	
 		else {
 			NetworkHandler.returnMessage(new Message("Invalid Request Type"));

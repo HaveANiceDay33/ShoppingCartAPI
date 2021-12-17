@@ -180,6 +180,8 @@ class ShoppingCartTesting {
 		Request addRemovableItem = new Request(Request.RequestType.ADD_ITEM, "1");
 		Request removeItem  = new Request(Request.RequestType.MODIFY_QUANTITY, "1", "0");
 		
+		Request badRequest = new Request(Request.RequestType.VIEW_CART, "JUNK");
+		
 		Stock.addItemToStock(new Item(0, "Cheetos", "A tasty, cheesy snack!", 1.50, "cheeto.png", 0), 0);
 		Stock.addItemToStock(new Item(1, "Pepsi", "A tasty, sugary drink!", 2.75, "pepsi.jpeg", 0.1), 100);
 		Stock.addItemToStock(new Item(2, "Sugar Cookies", "12 pack of tasty cookies with some frosting", 7.50, "sugarCookies.png", 0.25), 10);
@@ -193,6 +195,9 @@ class ShoppingCartTesting {
 		
 		nw.receiveRequest(addOutOfStockItem);
 		assertEquals("Item is out of stock.",NetworkHandler.lastReturnedMessage);	
+		
+		nw.receiveRequest(badRequest);
+		assertEquals("Incorrect number of arguments for request.",NetworkHandler.lastReturnedMessage);
 		
 	}
 
